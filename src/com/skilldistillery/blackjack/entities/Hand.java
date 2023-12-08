@@ -16,14 +16,14 @@ public abstract class Hand {
 	}
 	
 	public void clear() {
-		//TODO Clarify what this method is supposed to do
+		cards = new ArrayList<>();
 	}
 
 	public abstract int getHandValue();
 
 	@Override
 	public String toString() {
-		return "Hand [" + cards + "]";
+		return "Hand " + cards;
 	}
 	
 	
