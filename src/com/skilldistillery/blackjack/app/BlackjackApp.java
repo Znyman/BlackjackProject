@@ -17,8 +17,6 @@ public class BlackjackApp {
 		app.run();
 	}
 
-	// No instances of any other objects other than player and dealer (good
-	// encapsulation)
 	public void run() {
 		
 		dealInitialHands();
