@@ -7,4 +7,5 @@ public interface BlackjackActions {
 	public int getHandValue();
 	public boolean didBust();
 	public boolean gotBlackjack();
+	public void resetHand();
 }

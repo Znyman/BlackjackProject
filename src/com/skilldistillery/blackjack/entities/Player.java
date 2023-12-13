@@ -13,9 +13,22 @@ public class Player implements BlackjackActions {
 		hand.addCard(card);
 	}
 
+	public boolean takeTurn(String hitOrStand) {
+		switch (hitOrStand.toLowerCase()) {
+		case "hit":
+			return true;
+		case "stand":
+			System.out.println("You have ended your turn. It is now the dealer's turn.");
+			return false;
+		default:
+			return false;
+		}
+	}
+
 	@Override
 	public void displayHand() {
-		System.out.println(this.getClass().getSimpleName() + "'s " + hand + " is currently at " + getHandValue() + " points.");
+		System.out.println(
+				this.getClass().getSimpleName() + "'s " + hand + " is currently at " + getHandValue() + " points.");
 	}
 
 	@Override
@@ -34,4 +47,8 @@ public class Player implements BlackjackActions {
 		return ((BlackjackHand) hand).isBlackjack();
 	}
 
+	@Override
+	public void resetHand() {
+		hand = new BlackjackHand();
+	}
 }

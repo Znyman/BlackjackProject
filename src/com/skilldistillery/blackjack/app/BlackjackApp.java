@@ -7,9 +7,9 @@ import com.skilldistillery.blackjack.entities.Player;
 
 public class BlackjackApp {
 
-	Player player = new Player();
-	Dealer dealer = new Dealer();
-	Scanner keyboard = new Scanner(System.in);
+	private Player player = new Player();
+	private Dealer dealer = new Dealer();
+	private Scanner keyboard = new Scanner(System.in);
 
 	public static void main(String[] args) {
 
@@ -18,17 +18,30 @@ public class BlackjackApp {
 	}
 
 	public void run() {
-
-		dealInitialHands();
-		if (!player.gotBlackjack()) {
-			playersTurn();
-			dealersTurn();
+		String keepPlaying = "";
+		do {
+			dealInitialHands();
+			if (!player.gotBlackjack()) {
+				playersTurn();
+				dealer.takeTurn();
+			} else {
+				System.out.println("You got blackjack! Now the dealer will reveal their cards and determine a winner.");
+				dealer.displayHand();
+			}
 			determineWinner();
-		} else {
-			System.out.println("You got blackjack! Now the dealer will reveal their cards and determine a winner.");
-			dealer.displayHand();
-			determineWinner();
-		}
+			
+			System.out.print("Would you like to play again? 'yes' or 'no' ");
+			keepPlaying = keyboard.nextLine();
+			
+			if (keepPlaying.equalsIgnoreCase("yes")) {
+				player.resetHand();
+				dealer.resetHand();
+			}
+			
+		} while (keepPlaying.equalsIgnoreCase("yes"));
+		
+		System.out.println("Thanks for playing! Goodbye.");
+		
 	}
 
 	private void dealInitialHands() {
@@ -42,38 +55,24 @@ public class BlackjackApp {
 	private void playersTurn() {
 		boolean keepHitting = true;
 		while (keepHitting) {
-			System.out.print("Would you like to hit or stand? ");
-			String hitOrStand = keyboard.nextLine();
-			switch (hitOrStand.toLowerCase()) {
-			case "hit":
-				dealer.dealCardToPlayer(player);
-				if (player.didBust()) {
-					System.out.println("You busted. Now it is the dealer's turn.");
-					return;
-				} else if (player.gotBlackjack()) {
-					System.out.println("You got Blackjack! It's now the dealer's turn.");
-					return;
-				}
-				break;
-			case "stand":
-				System.out.println("You have ended your turn. It is now the dealer's turn.");
+			if (player.didBust()) {
+				System.out.println("You busted. Now it is the dealer's turn.");
 				keepHitting = false;
-				break;
-			default:
-				System.out.println("Input not recognized. Please enter 'hit' or 'stand'");
-				break;
+			} else if (player.gotBlackjack()) {
+				System.out.println("You got Blackjack! It's now the dealer's turn.");
+				keepHitting = false;
+			} else {
+				System.out.print("Would you like to 'hit' or 'stand'? ");
+				String hitOrStand = keyboard.nextLine();
+				if (!hitOrStand.equals("hit") && !hitOrStand.equals("stand")) {
+					System.out.println("Input not recognized.");
+					continue;
+				}
+				keepHitting = player.takeTurn(hitOrStand);
+				if (keepHitting) {
+					dealer.dealCardToPlayer(player);
+				}
 			}
-		}
-	}
-
-	private void dealersTurn() {
-		dealer.displayHand();
-		boolean keepHitting = dealer.getHandValue() < 17;
-		while (keepHitting) {
-			System.out.println("Dealer hits.");
-			dealer.dealCardToSelf();
-			dealer.displayHand();
-			keepHitting = dealer.getHandValue() < 17;
 		}
 	}
 
